@@ -1,13 +1,13 @@
 # sshlog - professional log viewer for ssh protocol 
 ## Introduction
-All authentication log is store in /var/log/auth.log. This program view all ssh logs such as ssh login and ssh attack in fancy table
+All authentication logs is store in /var/log/auth.log. This program view all ssh logs such as ssh login and ssh attack in fancy table.
 
 The project page is located at https://github.com/e2ma3n/sshlog
 
 ## Why we should use sshlog program ?
 
 - Because i need to see ssh attack in my server
-- Because i need to monitor user login in my server
+- Because i need to monitor users login in my server
 - etc
 
 
@@ -55,18 +55,18 @@ By using apt-get command; for example :
 # apt-get install tree
 # apt-get install python-pandas
 # apt-get install python-tabulate
-...
 ```
 
 ## How to install sshlog ?
 
 ```
-# git clone 
-# cd sshlog https://github.com/e2ma3n/sshlog.git
+# git clone https://github.com/e2ma3n/sshlog.git
 # mv sshlog.sh /usr/bin/sshlog
 # chmod +x /usr/bin/sshlog```
+```
 
 ## How to uninstall ?
+
 ```
 # rm -f /usr/bin/sshlog
 ```
