@@ -52,7 +52,6 @@ This will create sshlog directory in your current directory and source files are
 ## How to install dependencies on debian ?
 By using apt-get command; for example :
 ```
-# apt-get install tree
 # apt-get install python-pandas
 # apt-get install python-tabulate
 ```
@@ -63,6 +62,13 @@ By using apt-get command; for example :
 # git clone https://github.com/e2ma3n/sshlog.git
 # mv sshlog.sh /usr/bin/sshlog
 # chmod +x /usr/bin/sshlog```
+```
+
+## How to use sshlog ?
+just open terminal and run sshlog
+
+```
+# sshlog
 ```
 
 ## How to uninstall ?
