@@ -22,9 +22,6 @@ function dependencies {
 
     apt list python-tabulate 2> /dev/null | grep -o installed &> /dev/null
     [ "$?" != "0" ] && echo "[#] apt install python-tabulate" && exit 1
-
-    apt list tree 2> /dev/null | grep -o installed &> /dev/null
-    [ "$?" != "0" ] && echo "[#] apt install tree" && exit 1
 }
 
 function logs {
