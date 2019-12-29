@@ -2,19 +2,13 @@
 # Programming and idea by : E2MA3N [Iman Homayouni]
 # Gitbub : https://github.com/e2ma3n
 # Email : e2ma3n@Gmail.com
-# Website : http://blog.homayouni.info
+# Website : http://www.homayouni.info
 # License : GPL v2.0
-# sshlog v1.0 - core
+# Last update : 29-December-2019_15:08:35
+# sshlog v2.0 - core
 #--------------------------------------------------------#
 
 [ "$UID" != "0" ] && echo "[!] You need to use sudo or root user" && exit 1
-
-function usage {
-    echo "Usage:"
-    echo "   Create CSV logs: $0"
-    echo "   View CSV logs: $0 print [csv log address]"
-    echo "   Example: $0 print /var/log/sshlog/login/root.csv"
-}
 
 function main {
     rm -rf /var/log/sshlog &> /dev/null
@@ -38,6 +32,9 @@ function logs {
 }
 
 function root_attack {
+    # ---------------------------------------------------------------- #
+    # create and compute /var/log/sshlog/attack/root.csv               #
+    # ---------------------------------------------------------------- #
     cat $logs | grep 'Failed password for root' > /tmp/sshlog
 
     cat /tmp/sshlog | tr -s ' ' | cut -d ' ' -f '1,2,3' | tr ' ' '_' > /tmp/sshlog1
@@ -50,6 +47,9 @@ function root_attack {
 }
 
 function root_login {
+    # ---------------------------------------------------------------- #
+    # create and compute /var/log/sshlog/login/root.csv                #
+    # ---------------------------------------------------------------- #
     cat $logs | grep 'Accepted password for root' > /tmp/sshlog
 
     cat /tmp/sshlog | tr -s ' '  | cut -d ' ' -f '1,2,3' | tr ' ' '_' > /tmp/sshlog1
@@ -62,6 +62,9 @@ function root_login {
 }
 
 function invalid_user_attack {
+    # ---------------------------------------------------------------- #
+    # create and compute /var/log/sshlog/attack/invalid_users.csv      #
+    # ---------------------------------------------------------------- #
     cat $logs | grep 'Failed password for invalid user' > /tmp/sshlog
 
     cat /tmp/sshlog | tr -s ' ' | cut -d ' ' -f '1,2,3' | tr ' ' '_' > /tmp/sshlog1
@@ -74,6 +77,9 @@ function invalid_user_attack {
 }
 
 function other_user_login {
+    # ---------------------------------------------------------------- #
+    # create and compute /var/log/sshlog/login/other_user_login.csv    #
+    # ---------------------------------------------------------------- #
     cat $logs | grep 'Accepted password for' | grep -v root > /tmp/sshlog
 
     cat /tmp/sshlog | tr -s ' ' | cut -d ' ' -f '1,2,3' | tr ' ' '_' > /tmp/sshlog1
@@ -93,26 +99,86 @@ function c_python {
     echo "print(tabulate(data, headers=data.columns, tablefmt=\"grid\"))" >> /tmp/sshlog.py
 }
 
-reset ; dependencies
-if [ -z "$1" ] ; then
-    main
-    logs
-    root_attack
-    root_login
-    invalid_user_attack
-    other_user_login
-    tree /var/log/sshlog/
-else
-    if [ "$1" = "print" ] ; then
-        if [ -f "$2" ] ; then
-            dependencies
-            c_python
-            python /tmp/sshlog.py $2
-            rm /tmp/sshlog.py &> /dev/null
+function view {
+    for (( ;; )) ; do
+        # check root.csv file is exist or not
+        [ ! -f /var/log/sshlog/attack/root.csv ] && \
+        # check root.csv file is exist or not
+        [ ! -f /var/log/sshlog/login/root.csv ] && \
+        # check invalid_users.csv file is exist or not
+        [ ! -f /var/log/sshlog/attack/invalid_users.csv ] && \
+        # check other_user_login.csv file is exist or not
+        [ ! -f /var/log/sshlog/login/other_user_login.csv ] && \
+        echo "[!] No result" && exit 1
+
+        # clean up terminal
+        reset
+        echo "[+] -------------------------------------------------------------------------- [+]"
+        echo "[+] sshlog v2.0 - Professional log viewer for ssh protocol"
+        echo "[+] Programming and idea by : E2MA3N [Iman Homayouni]"
+        echo "[+] Gitbub : https://github.com/e2ma3n"
+        echo "[+]"
+
+        [ -f /var/log/sshlog/attack/root.csv ] && echo -e "[1] View \e[43mattack\e[0m on root user [in ssh protocol]"
+        [ -f /var/log/sshlog/login/root.csv ] && echo -e "[2] View \e[101mlogin\e[0m on root user [in ssh protocol]"
+        [ -f /var/log/sshlog/attack/invalid_users.csv ] && echo -e "[3] View \e[43mattack\e[0m on invalid user [in ssh protocol]"
+        [ -f /var/log/sshlog/login/other_user_login.csv ] && echo -e "[4] View \e[101mlogin\e[0m on other users [in ssh protocol]"
+
+        echo "[5] Exit"
+        echo -en "[>] Select: " ; read q
+        echo "[+]"
+
+        #  View attack on root user [in ssh protocol]
+        if [ "$q" = "1" ] ; then
+        echo -e "[1] View \e[43mattack\e[0m on root user [in ssh protocol]"
+        python /tmp/sshlog.py /var/log/sshlog/attack/root.csv 2> /dev/null | less
+        echo "[>] File: /var/log/sshlog/attack/root.csv"
+        echo -en "[>] Press enter for back to menu" ; read null
+
+
+        # View login on root user [in ssh protocol]
+        elif [ "$q" = "2" ] ; then
+        echo -e "[2] View \e[101mlogin\e[0m on root user [in ssh protocol]"
+        python /tmp/sshlog.py /var/log/sshlog/login/root.csv 2> /dev/null | less
+        echo "[>] File: /var/log/sshlog/login/root.csv"
+        echo -en "[>] Press enter for back to menu" ; read null
+
+
+        # View attack on invalid user [in ssh protocol]
+        elif [ "$q" = "3" ] ; then
+        python /tmp/sshlog.py /var/log/sshlog/attack/invalid_users.csv 2> /dev/null | less
+        echo -e "[3] View \e[43mattack\e[0m on invalid user [in ssh protocol]"
+        echo "[>] File: /var/log/sshlog/attack/invalid_users.csv"
+        echo -en "[>] Press enter for back to menu" ; read null
+
+
+        # View login on other users [in ssh protocol]
+        elif [ "$q" = "4" ] ; then
+        echo -e "[4] View \e[101mlogin\e[0m on other users [in ssh protocol]"
+        python /tmp/sshlog.py /var/log/sshlog/login/other_user_login.csv 2> /dev/null | less
+        echo "[>] File: /var/log/sshlog/login/other_user_login.csv"
+        echo -en "[>] Press enter for back to menu" ; read null
+
+
+        # exit from program
+        elif [ "$q" = "5" ] ; then
+            echo "[+] -------------------------------------------------------------------------- [+]"
+            exit 0
         else
-            usage ; exit 1
+            echo "[!] Bad input"
+            echo "[>] Try again"
+            sleep 3
         fi
-    else
-        usage ; exit 1
-    fi
-fi
+    done
+}
+
+# run functions
+dependencies
+c_python
+main
+logs
+root_attack
+root_login
+invalid_user_attack
+other_user_login
+view
